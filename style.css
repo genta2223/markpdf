@@ -419,6 +419,17 @@ button {
   word-wrap: break-word;
 }
 
+/* コードブロックのインデントと等幅フォント保持 */
+.markdown-body pre,
+.markdown-body pre code,
+pre,
+pre code {
+  white-space: pre-wrap !important;
+  tab-size: 4 !important;
+  -moz-tab-size: 4 !important;
+  font-family: Consolas, "Courier New", monospace !important;
+}
+
 /* 画像サイズ制約：最大高さ120mm、contain */
 .markdown-body img {
   max-width: 100%;
@@ -653,6 +664,12 @@ button {
   @page {
     size: A4 portrait;
     margin: 20mm 20mm 20mm 20mm;
+    @top-left { content: none; }
+    @top-center { content: none; }
+    @top-right { content: none; }
+    @bottom-left { content: none; }
+    @bottom-center { content: none; }
+    @bottom-right { content: none; }
   }
 
   body {
@@ -701,9 +718,20 @@ button {
     margin-top: 0 !important;
   }
 
-  h1, h2, h3 {
-    page-break-after: avoid;
-    break-after: avoid;
+  /* 見出しの直後での改ページを厳格に抑止 */
+  h1, h2, h3, h4 {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+
+  /* コードブロックのインデントを印刷時も完全保持 */
+  pre, pre code {
+    white-space: pre-wrap !important;
+    tab-size: 4 !important;
+    -moz-tab-size: 4 !important;
+    font-family: Consolas, "Courier New", monospace !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
   /* 画像最大高さ 120mm 制限 */

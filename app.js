@@ -130,15 +130,10 @@ function generateSampleChartDataUrl() {
   ctx.lineWidth = 2;
   ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
 
-  // タイトル
-  ctx.fillStyle = '#1e293b';
-  ctx.font = 'bold 32px "Segoe UI", "Yu Gothic UI", sans-serif';
-  ctx.fillText('図 1.1：AI導入による四半期別 作業時間削減と生産性向上推移', 50, 65);
-
-  // サブタイトル
-  ctx.fillStyle = '#64748b';
-  ctx.font = '20px "Segoe UI", "Yu Gothic UI", sans-serif';
-  ctx.fillText('（単位: 時間/月、調査対象: 開発・企画・管理部門 120名）', 50, 100);
+  // サブ情報（単位・調査対象情報）のみ表示し、タイトルは <figcaption> に任せて重複を解消
+  ctx.fillStyle = '#475569';
+  ctx.font = 'bold 22px "Segoe UI", "Yu Gothic UI", sans-serif';
+  ctx.fillText('四半期別 作業時間削減と生産性向上推移（単位: 時間/月、調査対象: 120名）', 50, 65);
 
   // グラフエリア設定
   const originX = 120;
@@ -347,18 +342,73 @@ function renderMarkdown() {
 }
 
 /**
- * プレビュー内の画像要素を走査し、
- * 2枚目以降の画像の直前に自動改ページクラス（auto-page-break）を付与する
+ * プレビュー内の画像要素および見出しを走査し、
+ * 1. 2枚目以降の画像、またはページ境界を跨ぐ画像の直前に改ページクラスを付与
+ * 2. 画像の直前に見出し（H1〜H4）がある場合、見出しの直前に改ページクラスを付与し、
+ *    見出しと画像が必ず同一ページにセットで配置されるように制御する
  */
 function enforceOneImagePerPage() {
-  const figures = previewContent.querySelectorAll('figure.content-figure, img:not(figure img)');
-  if (figures.length <= 1) return;
+  // すべての要素から一旦改ページクラスを除去
+  previewContent.querySelectorAll('.auto-page-break').forEach(el => {
+    el.classList.remove('auto-page-break');
+  });
 
+  const figures = previewContent.querySelectorAll('figure.content-figure, img:not(figure img)');
+  if (figures.length === 0) return;
+
+  // 画像の直前にある見出し（H1〜H4）を探索するヘルパー
+  function getPrecedingHeading(elem) {
+    let prev = elem.previousElementSibling;
+    while (prev) {
+      if (['H1', 'H2', 'H3', 'H4'].includes(prev.tagName)) {
+        return prev;
+      }
+      if (prev.tagName === 'HR') {
+        prev = prev.previousElementSibling;
+        continue;
+      }
+      break;
+    }
+    return null;
+  }
+
+  // 1. 「1ページ1画像」ルール：2枚目以降の画像（またはその直前見出し）に改ページを付与
   figures.forEach((fig, index) => {
     if (index > 0) {
-      fig.classList.add('auto-page-break');
-    } else {
-      fig.classList.remove('auto-page-break');
+      const heading = getPrecedingHeading(fig);
+      const target = heading || fig;
+      target.classList.add('auto-page-break');
+    }
+  });
+
+  // 2. 1ページ目を含む全画像について、高さとページ境界を判定
+  // A4 用紙の本文領域高さ（257mm ≒ 971px）
+  const pageHeightPx = 257 * 3.78;
+  const pageRect = previewPage.getBoundingClientRect();
+
+  figures.forEach((fig) => {
+    const heading = getPrecedingHeading(fig);
+    if (!heading) return;
+
+    // すでに改ページクラスが付与されている場合はスキップ
+    if (heading.classList.contains('auto-page-break') || fig.classList.contains('auto-page-break')) {
+      return;
+    }
+
+    const headingRect = heading.getBoundingClientRect();
+    const figRect = fig.getBoundingClientRect();
+
+    const headingTop = headingRect.top - pageRect.top;
+    const figBottom = figRect.bottom - pageRect.top;
+
+    // 現在のページ内での位置と、見出し＋画像ブロック全体の高さ
+    const posInPage = headingTop % pageHeightPx;
+    const blockHeight = figBottom - headingTop;
+
+    // ページの残余高さを超えて画像が次ページに送られると予想される場合、
+    // 見出しだけが前ページに取り残されないよう「見出しの直前」から改ページ
+    if (posInPage + blockHeight > pageHeightPx && posInPage > 200) {
+      heading.classList.add('auto-page-break');
     }
   });
 }
