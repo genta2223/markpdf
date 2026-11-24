@@ -1,0 +1,719 @@
+/* 全体リセット & 共通スタイル */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Yu Gothic UI", "Meiryo", sans-serif;
+  color: #333;
+  background-color: #eef1f5;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* アプリヘッダー */
+.app-header {
+  background-color: #ffffff;
+  border-bottom: 1px solid #dcdfe6;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  z-index: 10;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.logo-icon {
+  font-size: 22px;
+}
+
+/* 安心プライバシーバッジ */
+.privacy-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  font-size: 11.5px;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  font-weight: 500;
+}
+
+/* レイアウトルールバッジ */
+.layout-rule-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+  font-size: 11.5px;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  font-weight: 500;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.theme-selector-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12.5px;
+  color: #4b5563;
+  margin-right: 4px;
+}
+
+#theme-select {
+  padding: 5px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 12.5px;
+  background-color: #f9fafb;
+  cursor: pointer;
+  outline: none;
+}
+
+#theme-select:focus {
+  border-color: #2563eb;
+}
+
+/* ボタン群 */
+button {
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.primary-btn {
+  background-color: #2563eb;
+  color: #ffffff;
+  border: 1px solid #1d4ed8;
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.primary-btn:hover {
+  background-color: #1d4ed8;
+}
+
+.secondary-btn {
+  background-color: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  padding: 5px 10px;
+}
+
+.secondary-btn:hover {
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+/* メインボディレイアウト */
+.app-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* 左：エディタペイン */
+.editor-pane {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  border-right: 1px solid #e2e8f0;
+  min-width: 320px;
+}
+
+.editor-toolbar {
+  height: 40px;
+  background-color: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.tool-group {
+  display: flex;
+  gap: 4px;
+}
+
+.tool-btn {
+  background: none;
+  border: 1px solid transparent;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #475569;
+}
+
+.tool-btn:hover {
+  background-color: #e2e8f0;
+  color: #0f172a;
+}
+
+.upload-label {
+  font-size: 12px;
+  color: #2563eb;
+  padding: 4px 8px;
+  border: 1px dashed #93c5fd;
+  border-radius: 4px;
+  background-color: #eff6ff;
+  cursor: pointer;
+}
+
+.upload-label:hover {
+  background-color: #dbeafe;
+}
+
+.editor-wrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+}
+
+#editor {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  padding: 16px;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #1e293b;
+  background-color: #ffffff;
+  white-space: pre-wrap;
+  tab-size: 2;
+}
+
+/* ドラッグ＆ドロップ用オーバーレイ */
+.drop-overlay {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(37, 99, 235, 0.08);
+  border: 2px dashed #2563eb;
+  z-index: 5;
+  justify-content: center;
+  align-items: center;
+}
+
+.drop-overlay.active {
+  display: flex;
+}
+
+.drop-message {
+  background-color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  color: #2563eb;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+}
+
+/* 挿入画像管理トレイ */
+.image-tray {
+  border-top: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+  padding: 6px 12px;
+  max-height: 110px;
+  display: flex;
+  flex-direction: column;
+}
+
+.tray-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.tray-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.tray-help {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.tray-help code {
+  background-color: #e2e8f0;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-family: monospace;
+}
+
+.tray-items {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.tray-card {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.tray-thumb {
+  width: 26px;
+  height: 26px;
+  object-fit: cover;
+  border-radius: 2px;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+}
+
+.tray-name {
+  color: #334155;
+  font-family: monospace;
+}
+
+.tray-delete {
+  color: #ef4444;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 0 3px;
+}
+
+.tray-delete:hover {
+  color: #b91c1c;
+}
+
+/* エディタステータスバー */
+.editor-status {
+  height: 24px;
+  background-color: #f1f5f9;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 12px;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.auto-compress-hint {
+  color: #0284c7;
+  font-weight: 500;
+}
+
+/* スプリッター */
+.resizer {
+  width: 6px;
+  background-color: #e2e8f0;
+  cursor: col-resize;
+  transition: background-color 0.2s;
+}
+
+.resizer:hover, .resizer.dragging {
+  background-color: #3b82f6;
+}
+
+/* 右：プレビューペイン */
+.preview-pane {
+  flex: 1;
+  background-color: #cbd5e1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* プレビュー上部ガイドバナー */
+.preview-top-banner {
+  height: 32px;
+  background-color: #1e293b;
+  color: #f8fafc;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  font-size: 11.5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  z-index: 2;
+}
+
+.banner-badge {
+  background-color: #3b82f6;
+  color: #ffffff;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 10.5px;
+}
+
+.banner-text {
+  color: #94a3b8;
+}
+
+.preview-scroll-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+/* A4 用紙シートのビジュアル表現（画面上） */
+.a4-page {
+  background-color: #ffffff;
+  width: 210mm;
+  min-height: 297mm;
+  padding: 20mm;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+}
+
+/* Markdown レンダリング共通 */
+.markdown-body {
+  word-wrap: break-word;
+}
+
+/* 画像サイズ制約：最大高さ120mm、contain */
+.markdown-body img {
+  max-width: 100%;
+  max-height: 120mm;
+  object-fit: contain;
+  display: block;
+  margin: 12px auto;
+  border-radius: 4px;
+}
+
+.markdown-body figure {
+  margin: 16px 0;
+  text-align: center;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.markdown-body figcaption {
+  font-size: 12px;
+  color: #555;
+  margin-top: 6px;
+}
+
+/* 1ページ1画像のための自動改ページスタイル */
+.auto-page-break {
+  break-before: page;
+  page-break-before: always;
+  margin-top: 30px;
+  position: relative;
+}
+
+/* 画面上の視覚的改ページインジケータ */
+.auto-page-break::before {
+  content: "✂ ───── A4改ページ (1ページ1画像自動配置) ─────";
+  display: block;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  margin-bottom: 24px;
+  padding: 4px 0;
+  border-top: 1px dashed #cbd5e1;
+  border-bottom: 1px dashed #cbd5e1;
+  background-color: #f8fafc;
+}
+
+/* ========================================================
+   テーマ別プリセット CSS
+======================================================== */
+
+/* ① 論文・レポート風（明朝体ベース・図表キャプション強調） */
+.theme-academic {
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", "MS PMincho", "Noto Serif JP", serif;
+  font-size: 14px;
+  line-height: 1.85;
+  color: #111;
+}
+
+.theme-academic h1 {
+  font-size: 24px;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 24px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.theme-academic h2 {
+  font-size: 18px;
+  margin-top: 28px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #111;
+  padding-bottom: 4px;
+}
+
+.theme-academic h3 {
+  font-size: 15px;
+  margin-top: 20px;
+  margin-bottom: 8px;
+}
+
+.theme-academic p {
+  text-indent: 1em;
+  margin-bottom: 12px;
+}
+
+.theme-academic table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  border-top: 2px solid #000;
+  border-bottom: 2px solid #000;
+  font-size: 13px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.theme-academic table th {
+  border-bottom: 1px solid #000;
+  padding: 8px 12px;
+  font-weight: 600;
+}
+
+.theme-academic table td {
+  padding: 8px 12px;
+  border-bottom: none;
+}
+
+.theme-academic blockquote {
+  border-left: 2px solid #666;
+  padding-left: 14px;
+  color: #444;
+  margin: 16px 0;
+  font-style: italic;
+}
+
+.theme-academic pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  padding: 10px;
+  font-family: Consolas, monospace;
+  font-size: 12px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+/* ② ビジネス報告書風（ゴシック体・見出し装飾・青アクセント） */
+.theme-business {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Noto Sans JP", sans-serif;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: #24292f;
+}
+
+.theme-business h1 {
+  font-size: 22px;
+  color: #1e3a8a;
+  border-bottom: 2px solid #2563eb;
+  padding-bottom: 6px;
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.theme-business h2 {
+  font-size: 16px;
+  color: #1e3a8a;
+  border-left: 4px solid #2563eb;
+  padding-left: 10px;
+  margin-top: 24px;
+  margin-bottom: 12px;
+  background: linear-gradient(to right, #eff6ff, transparent);
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.theme-business h3 {
+  font-size: 14px;
+  color: #1e40af;
+  margin-top: 18px;
+  margin-bottom: 8px;
+}
+
+.theme-business p {
+  margin-bottom: 10px;
+}
+
+.theme-business table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  border: 1px solid #cbd5e1;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.theme-business table th {
+  background-color: #1e3a8a;
+  color: #ffffff;
+  padding: 8px 12px;
+  font-weight: 600;
+  border: 1px solid #1e3a8a;
+}
+
+.theme-business table td {
+  padding: 7px 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.theme-business table tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+.theme-business blockquote {
+  border-left: 4px solid #3b82f6;
+  background-color: #eff6ff;
+  padding: 10px 14px;
+  border-radius: 0 4px 4px 0;
+  margin: 14px 0;
+  color: #1e3a8a;
+}
+
+.theme-business pre {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 12px;
+  font-family: Consolas, monospace;
+  font-size: 12px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+/* ③ シンプルメモ風 */
+.theme-simple {
+  font-family: Consolas, "Lucida Console", "MS Gothic", monospace;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #000;
+}
+
+.theme-simple h1 { font-size: 18px; border-bottom: 1px dashed #999; margin-bottom: 12px; }
+.theme-simple h2 { font-size: 15px; margin-top: 18px; margin-bottom: 8px; }
+.theme-simple table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+.theme-simple table th, .theme-simple table td { border: 1px solid #999; padding: 6px 8px; }
+.theme-simple blockquote { border-left: 3px solid #999; padding-left: 10px; color: #444; }
+.theme-simple pre { background-color: #f4f4f4; border: 1px solid #ccc; padding: 10px; }
+
+/* ========================================================
+   A4 印刷時（@media print）の高品質スタイル
+======================================================== */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 20mm 20mm 20mm 20mm;
+  }
+
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    height: auto !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* 画面用UI、エディタ、ヘッダー、プレビュー上部バーをすべて非表示 */
+  .no-print, .app-header, .editor-pane, .resizer, .preview-top-banner {
+    display: none !important;
+  }
+
+  /* プレビュー領域を用紙全体に展開 */
+  .app-body, .preview-pane, .preview-scroll-wrapper {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: none !important;
+    overflow: visible !important;
+  }
+
+  .a4-page {
+    width: 100% !important;
+    min-height: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* 画面上の改ページインジケータ文字を印刷時には消去 */
+  .auto-page-break::before {
+    display: none !important;
+  }
+
+  /* 改ページ制御 */
+  .auto-page-break {
+    break-before: page !important;
+    page-break-before: always !important;
+    margin-top: 0 !important;
+  }
+
+  h1, h2, h3 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  /* 画像最大高さ 120mm 制限 */
+  .markdown-body img {
+    max-height: 120mm !important;
+    object-fit: contain !important;
+  }
+
+  pre, table, tr, blockquote, figure, img {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}

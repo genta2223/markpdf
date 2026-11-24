@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- 基本メタデータ -->
+  <title>MarkPDF - AI出力テキスト・画像即PDFエディタ | 完全ブラウザ完結</title>
+  <meta name="description" content="AIの出力テキストやスクリーンショット画像をコピペするだけで、商業品質のA4レポートやビジネス報告書PDFを即座に作成。外部通信一切なし・完全クライアント完結のセキュアなMarkdownエディタ。">
+  <meta name="keywords" content="Markdown, PDF, AI, レポート作成, A4印刷, 無料ツール, セキュア, ノンプログラマー">
+  <meta name="author" content="MarkPDF Team">
+
+  <!-- OGP (Open Graph Protocol) 設定（SNS・note・Xシェア最適化） -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="MarkPDF - AI出力テキスト・画像即PDFエディタ | 完全ブラウザ完結">
+  <meta property="og:description" content="AIの出力テキストやスクリーンショット画像をコピペするだけで、美しいA4レポートやビジネス文書PDFを即座に生成。完全ローカル処理で情報漏洩の心配なし。">
+  <meta property="og:site_name" content="MarkPDF">
+  <meta property="og:locale" content="ja_JP">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MarkPDF - AI出力テキスト・画像即PDFエディタ">
+  <meta name="twitter:description" content="AI出力テキストやスクショ画像を貼るだけ。ワンクリックで商業品質のA4 PDFをブラウザ完結で出力。">
+
+  <!-- SVG ファビコン（埋め込みインラインSVG・外部リクエストなし） -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📑</text></svg>">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- アプリヘッダー（印刷時は非表示） -->
+  <header class="app-header no-print">
+    <div class="header-left">
+      <div class="logo">
+        <span class="logo-icon">📑</span>
+        <span class="logo-title">MarkPDF</span>
+      </div>
+      <div class="privacy-badge" title="すべての処理・画像・テキストはお使いのPC（ブラウザ内）でのみ保存・処理され、外部サーバーには一切送信されません。">
+        <span class="badge-icon">🔒</span> 完全ブラウザ内処理（データ外部送信ゼロ）
+      </div>
+      <div class="layout-rule-badge" title="印刷時のレイアウト突き抜けを防ぐため、1ページに画像が1枚だけ収まるよう自動改ページされます。">
+        <span class="rule-icon">📐</span> 1ページ1画像・自動改ページ適用中
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="theme-selector-group">
+        <label for="theme-select">デザイン:</label>
+        <select id="theme-select">
+          <option value="business" selected>② ビジネス報告書風（ゴシック体）</option>
+          <option value="academic">① 論文・レポート風（明朝体）</option>
+          <option value="simple">③ シンプルメモ風（等幅）</option>
+        </select>
+      </div>
+
+      <!-- 入出力アクション -->
+      <button id="btn-open-md" class="secondary-btn" title="ローカルの .md / .txt ファイルを開く">
+        📂 .md 読込
+        <input type="file" id="md-file-input" accept=".md,.txt" style="display: none;">
+      </button>
+      <button id="btn-save-md" class="secondary-btn" title="現在の内容を .md ファイルとしてダウンロード">💾 .md 保存</button>
+      <button id="btn-load-sample" class="secondary-btn" title="サンプルレポートを復元">サンプル復元</button>
+      <button id="btn-clear" class="secondary-btn" title="内容をすべてクリア">新規クリア</button>
+      <button id="btn-print" class="primary-btn" title="A4サイズでPDF保存または印刷します">
+        <span class="btn-icon">🖨️</span> PDFとして保存
+      </button>
+    </div>
+  </header>
+
+  <!-- メイン作業領域（左右2カラム） -->
+  <div class="app-body">
+    <!-- 左ペイン：Markdown エディタ（印刷時は非表示） -->
+    <section class="editor-pane no-print">
+      <div class="editor-toolbar">
+        <div class="tool-group">
+          <button class="tool-btn" data-insert="# " title="見出し1">H1</button>
+          <button class="tool-btn" data-insert="## " title="見出し2">H2</button>
+          <button class="tool-btn" data-wrap="**" title="太字"><strong>B</strong></button>
+          <button class="tool-btn" data-wrap="*" title="斜体"><em>I</em></button>
+          <button class="tool-btn" data-insert="- " title="箇条書きリスト">• リスト</button>
+          <button class="tool-btn" data-insert="| 指標 | 従来実績 | 導入後効果 | 備考 |&#10;| :--- | :--- | :--- | :--- |&#10;| 作業時間 | 4.8 時間 | **0.4 時間** | 91.6% 削減 |&#10;| 属人化率 | 78 % | **12 %** | マニュアル化 |&#10;" title="表（テーブル）挿入">📊 表</button>
+          <button class="tool-btn" data-insert="```python&#10;# ここにコード&#10;```" title="コードブロック">&lt;/&gt;</button>
+        </div>
+        <div class="image-upload-helper">
+          <label for="file-input" class="upload-label" title="画像ファイルを選択して挿入（最大横幅1600pxに自動圧縮）">
+            📷 画像を選択
+            <input type="file" id="file-input" accept="image/*" multiple style="display: none;">
+          </label>
+        </div>
+      </div>
+
+      <!-- エディタ本体 -->
+      <div class="editor-wrapper" id="editor-dropzone">
+        <textarea id="editor" spellcheck="false" placeholder="ここに AI の出力テキストや Markdown を貼り付けてください。&#10;&#10;💡 スクリーンショットの直接貼り付け（Ctrl + V）や、画像ファイルのドラッグ＆ドロップに対応しています。"></textarea>
+        <div class="drop-overlay" id="drop-overlay">
+          <div class="drop-message">ここに画像をドロップして挿入（自動リサイズ対応）</div>
+        </div>
+      </div>
+
+      <!-- 貼り付けた画像一覧の簡易管理トレイ -->
+      <div class="image-tray" id="image-tray">
+        <div class="tray-header">
+          <span class="tray-title">挿入画像 (<span id="image-count">0</span>枚)</span>
+          <span class="tray-help">※エディタ上は <code>![画像名](image:id)</code> という短い参照IDで管理され、本文が長文Base64で埋まりません</span>
+        </div>
+        <div class="tray-items" id="tray-items"></div>
+      </div>
+
+      <!-- エディタステータスバー -->
+      <div class="editor-status">
+        <span id="char-count">0 文字</span>
+        <span class="auto-compress-hint">🛡️ XSS防止サニタイズ適用済み ＆ ⚡ 画像自動最適化</span>
+        <span id="save-status">💾 自動保存済み</span>
+      </div>
+    </section>
+
+    <!-- スプリッター（区切り線、印刷時は非表示） -->
+    <div class="resizer no-print" id="resizer"></div>
+
+    <!-- 右ペイン：A4プレビュー領域（印刷時はこの中身のみを用紙全体に展開） -->
+    <section class="preview-pane">
+      <div class="preview-top-banner no-print">
+        <span class="banner-badge">A4 印刷プレビュー</span>
+        <span class="banner-text">※ レイアウト崩れ防止のため、1ページにつき画像1枚まで自動配置（自動改ページ）されます</span>
+      </div>
+      <div class="preview-scroll-wrapper">
+        <article class="a4-page theme-business" id="preview-page">
+          <!-- marked.js と DOMPurify により安全に生成される HTML -->
+          <div id="preview-content" class="markdown-body"></div>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <!-- CDN スクリプト（marked.js + DOMPurify） -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.4/dist/purify.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
